@@ -33,3 +33,4 @@ server.login(fromaddr, "jaser")
 text = msg.as_string()
 server.sendmail(fromaddr, toaddr, text)
 server.quit()
+print "Email sent!"
