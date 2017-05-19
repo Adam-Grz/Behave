@@ -17,8 +17,8 @@ body = "It worked!!"
  
 msg.attach(MIMEText(body, 'plain'))
  
-filename = "testresults.tar.gz"
-attachment = open("testresults.tar.gz", "rb")
+filename = "testresults"
+attachment = open("testresults", "rb")
  
 part = MIMEBase('application', 'octet-stream')
 part.set_payload((attachment).read())
