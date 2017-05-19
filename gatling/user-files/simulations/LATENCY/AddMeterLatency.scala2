@@ -1,0 +1,95 @@
+package iotdemo
+
+import io.gatling.core.Predef._
+import io.gatling.http.Predef._
+import scala.concurrent.duration._
+
+
+/**
+ * Constant parameters for our Gatling simulation - placed here to tidy up the actual simulation
+ */
+object AddMeterLatency {
+  val httpConf = http
+    .baseURL("http://192.168.99.100") // Here is the root for all relative URLs
+    .acceptHeader("text/plain,text/html,application/xhtml+xml,application/json,application/xml;q=0.9,*/*;q=0.8") // Here are the common headers
+    .doNotTrackHeader("1")
+    .acceptLanguageHeader("en-US,en;q=0.5")
+    .acceptEncodingHeader("gzip, deflate")
+    .userAgentHeader("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:16.0) Gecko/20100101 Firefox/16.0")
+  val headers = Map("Content-Type" -> "application/json") // Note the headers specific to a given request
+  val r = scala.util.Random
+  val abc = r.nextInt(50) + 20
+  val abcd = abc.toDouble / 10000
+  val latitude = 53.43 + abcd
+  val longitude = -2.159 - abcd
+  val meter = "meter" + r.nextPrintableChar + r.nextPrintableChar + r.nextPrintableChar + r.nextPrintableChar + r.nextPrintableChar
+  val houseId = "abcde" + r.nextPrintableChar + r.nextPrintableChar + r.nextPrintableChar + r.nextPrintableChar + r.nextPrintableChar
+  val responseId = "responseId"
+  val requestStatus = "requestStatus"
+  val counter = "counter"
+}
+
+class AddMeterLatency extends Simulation {
+  import AddMeterLatency._
+
+  val addMeterLatency = scenario(s"Add a meter, submit readings, get average consumption")
+    .exec(_.set(requestStatus, 0))
+    .exec(_.set(counter, 0))
+    .exec(
+      http("Add a meter")
+        .post(":9002/meters")
+        .headers(headers)
+        .body(
+          StringBody(
+            s"""{
+						   "location" : {
+										 "latitude" : $latitude,
+										 "longitude" : $longitude
+										},
+						   "metadata" : {
+										 "description" : "$meter",
+										 "houseId" : "$houseId"
+										}
+			        }""")
+        ).asJSON
+        .check(jsonPath("$.id").saveAs(responseId))
+    )
+    // Scenario waits until this session's meter has been added to the DB
+    
+    .asLongAs(session => session.attributes(requestStatus).asInstanceOf[Int] != 200) {
+	  exec(
+		pause(1.second)
+		//counter += 1
+	  )
+	  //.exec(_.set(counter, counter+1))
+	  
+	  .exec(
+        http("Check if meter has been added to DB")
+          .get(":9002/meters/${responseId}")
+          .headers(headers)
+          // FIXME: are we actually saving a boolean here?
+          .check(status.is(200).saveAs(requestStatus))
+      )
+    }
+      .exec(session => {
+		val asdf = session.get(requestStatus)
+		//val asdf2 = session.get(counter).as[Int]
+		println(" ")
+		println("----------------------------")
+		println("HERE GOES: ")
+		println(asdf)
+		println(" ")
+		println("----------------------------")
+		println("COUNTER: ")
+		//println(asdf2)
+		session
+	})
+
+  // Run our scenario
+  setUp(
+  addMeterLatency.inject(
+    atOnceUsers(1)
+    )
+  .protocols(httpConf)
+  )
+}

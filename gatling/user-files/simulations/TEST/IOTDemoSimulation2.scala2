@@ -1,0 +1,99 @@
+package TEST
+
+import io.gatling.core.Predef._
+import io.gatling.http.Predef._
+import scala.concurrent.duration._
+
+trait Scenario extends Simulation {
+
+  val httpConf = http
+    .baseURL("http://192.168.99.100") // Here is the root for all relative URLs
+    .acceptHeader("text/plain,text/html,application/xhtml+xml,application/json,application/xml;q=0.9,*/*;q=0.8") // Here are the common headers
+    .doNotTrackHeader("1")
+    .acceptLanguageHeader("en-US,en;q=0.5")
+    .acceptEncodingHeader("gzip, deflate")
+    .userAgentHeader("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:16.0) Gecko/20100101 Firefox/16.0")
+
+  val headers = Map("Content-Type" -> "application/json") // Note the headers specific to a given request
+
+  val r = scala.util.Random
+  var abc = r.nextInt(50)+20
+  var abcd = (abc.toDouble)/10000
+  var latitude = 53.43+abcd
+  var longitude = -2.159-abcd
+  var meter = "meter" + r.nextPrintableChar + r.nextPrintableChar + r.nextPrintableChar
+  var houseId = "abcde" + r.nextPrintableChar + r.nextPrintableChar + r.nextPrintableChar
+  var power1 = 400
+  var power2 = 500
+  var power3 = 900
+  
+  val scn = scenario("Add a meter, submit readings, get average consumption") // A scenario is a chain of requests and pauses
+    .pause(1)
+    .exec(http("Add a meter")
+      .post(":9002/meters")
+      .headers(headers)
+      .body(StringBody(s"""{
+						   "location" : {
+										 "latitude" : $latitude,
+										 "longitude" : $longitude
+										},
+						   "metadata" : {
+										 "description" : "$meter",
+										 "houseId" : "$houseId"
+										}
+			}""")).asJSON
+      .check(jsonPath("$.id").saveAs("myresponseId"))
+	 )
+    .pause(1)
+    .exec(session => {
+		val maybeId = session.get("myresponseId").asOption[String]
+		println(maybeId.getOrElse("COULD NOT FIND ID"))
+		session
+	})
+	.exec(
+		http("Add a reading 1")
+      .post(":9003/meters/${myresponseId}")
+      .headers(headers)
+      .body(StringBody(s"""{
+				"timestamp" : 10,
+				"power" : $power1
+			}""")).asJSON
+	)
+	.exec(
+		http("Add a reading 2")
+      .post(":9003/meters/${myresponseId}")
+      .headers(headers)
+      .body(StringBody(s"""{
+				"timestamp" : 20,
+				"power" : $power2
+			}""")).asJSON
+	)
+	.exec(
+		http("Add a reading 3")
+      .post(":9003/meters/${myresponseId}")
+      .headers(headers)
+      .body(StringBody(s"""{
+				"timestamp" : 30,
+				"power" : $power3
+			}""")).asJSON
+	)
+    .pause(5)
+    .exec(
+		http("Get average consumption")
+	  .get(":9002/meters/${myresponseId}")
+	  .headers(headers)
+	  .check(jsonPath("$.averageConsumption").ofType[Int].is((power1+power2+power3)/3))
+    )
+ 
+}
+
+
+class E_VariableUsersScenario extends Scenario {
+
+  setUp(
+  scn.inject(
+    atOnceUsers(900)
+    )
+  .protocols(httpConf))
+  
+}

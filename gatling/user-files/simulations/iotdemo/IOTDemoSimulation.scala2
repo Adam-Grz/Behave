@@ -1,0 +1,196 @@
+package iotdemo
+
+import io.gatling.core.Predef._
+import io.gatling.core.structure.PopulationBuilder
+import io.gatling.http.Predef._
+import scala.concurrent.duration._
+import scalaj.http.Http._
+
+trait Scenario extends Simulation {
+
+  val httpConf = http
+    .baseURL("http://192.168.99.100") // Here is the root for all relative URLs
+    .acceptHeader("text/plain,text/html,application/xhtml+xml,application/json,application/xml;q=0.9,*/*;q=0.8") // Here are the common headers
+    .doNotTrackHeader("1")
+    .acceptLanguageHeader("en-US,en;q=0.5")
+    .acceptEncodingHeader("gzip, deflate")
+    .userAgentHeader("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:16.0) Gecko/20100101 Firefox/16.0")
+
+  val headers = Map("Content-Type" -> "application/json") // Note the headers specific to a given request
+
+  val r = scala.util.Random
+  var abc = r.nextInt(50)+20
+  var abcd = (abc.toDouble)/10000
+  var latitude = 53.43+abcd
+  var longitude = -2.159-abcd
+  var meter = "meter" + r.nextPrintableChar + r.nextPrintableChar + r.nextPrintableChar + r.nextPrintableChar + r.nextPrintableChar
+  var houseId = "abcde" + r.nextPrintableChar + r.nextPrintableChar + r.nextPrintableChar + r.nextPrintableChar + r.nextPrintableChar
+  var power1 = 400
+  var power2 = 500
+  var power3 = 900
+
+
+//******************************************************
+
+
+	before {
+		
+		var startTime = System.currentTimeMillis
+		var startCount = Http("http://192.168.99.100:9002/meters").param("count").asInt
+		
+	}
+
+	after {
+		
+		var i = 1
+		var j = 1
+		var conditionSatisfied = false
+		
+		while ( ! assertions(global.successfulRequests.is(j)) ) {
+			j += 1
+		}
+		
+		while ( i <= 120 && ! conditionSatisfied ){
+			var endCount = Http("http://192.168.99.100:9002/meters").param("count").asInt
+			if ( endCount == (startCount + j) ) {
+				endTime = System.currentTimeMillis - startTime;
+				conditionSatisfied = true;
+										  }
+										  i += 1
+										  Thread.sleep(1000)
+							 }
+		
+		  }
+
+
+//******************************************************
+
+
+  val scn = scenario(s"Add a meter, submit readings, get average consumption") // A scenario is a chain of requests and pauses
+
+    .pause(1)
+    .exec(http("Add a meter")
+      .post(":9002/meters")
+      .headers(headers)
+      .body(StringBody(s"""{
+						   "location" : {
+										 "latitude" : $latitude,
+										 "longitude" : $longitude
+										},
+						   "metadata" : {
+										 "description" : "$meter",
+										 "houseId" : "$houseId"
+										}
+			}""")).asJSON
+      .check(jsonPath("$.id").saveAs("myresponseId"))
+	 )
+    .pause(5)
+    .exec(session => {
+		val maybeId = session.get("myresponseId").asOption[String]
+		println(maybeId.getOrElse("COULD NOT FIND ID"))
+		session
+	})
+	.pause(1)
+	.exec(
+		http("Add a reading 1")
+      .post(":9003/meters/${myresponseId}")
+      .headers(headers)
+      .body(StringBody(s"""{
+				"timestamp" : 10,
+				"power" : $power1
+			}""")).asJSON
+	)
+	.pause(1)
+	.exec(
+		http("Add a reading 2")
+      .post(":9003/meters/${myresponseId}")
+      .headers(headers)
+      .body(StringBody(s"""{
+				"timestamp" : 20,
+				"power" : $power2
+			}""")).asJSON
+	)
+	.pause(1)
+	.exec(
+		http("Add a reading 3")
+      .post(":9003/meters/${myresponseId}")
+      .headers(headers)
+      .body(StringBody(s"""{
+				"timestamp" : 30,
+				"power" : $power3
+			}""")).asJSON
+	)
+    .pause(10)
+    .exec(
+		http("Get average consumption")
+	  .get(":9002/meters/${myresponseId}")
+	  .headers(headers)
+/*	  .check(bodyString.saveAs("ASDF")))
+	   
+	  .exec {session =>
+		   val QWE = session.get("ASDF").asOption[String]
+           println(QWE)
+           session
+       }*/
+	  .check(jsonPath("$.averageConsumption").ofType[Int].is((power1+power2+power3)/3))
+    )
+	.pause(10)
+	
+}
+
+class A_SingleUserScenario extends Scenario {
+
+  setUp(scn.inject(atOnceUsers(1)).protocols(httpConf))
+  
+}
+
+class B_FiveUserScenario extends Scenario {
+
+  setUp(scn.inject(atOnceUsers(5)).protocols(httpConf))
+  
+}
+
+class C_ManyUserScenario extends Scenario {
+
+  setUp(
+  scn.inject(
+    nothingFor(4 seconds), // 1
+    atOnceUsers(10), // 2
+    rampUsers(10) over(5 seconds), // 3
+    constantUsersPerSec(20) during(15 seconds), // 4
+    constantUsersPerSec(20) during(15 seconds) randomized, // 5
+    rampUsersPerSec(10) to 20 during(50 seconds), // 6
+    rampUsersPerSec(10) to 20 during(50 seconds) randomized)
+  .protocols(httpConf))
+  
+}
+
+class D_COUNT extends Scenario {
+
+  setUp(
+  scn.inject(
+    atOnceUsers(1000)
+    )
+  .protocols(httpConf))
+  
+}
+
+/*
+class ExampleSimulation extends Scenario {
+  
+  def experiment(n: Int) = {
+
+    scnF(n).inject(
+      atOnceUsers(n),
+      nothingFor(5.seconds)
+      )
+    .protocols(httpConf)
+  }
+
+  //val steps: List[PopulationBuilder] = (10 to 20 by 5).map(n => experiment(n)).toList
+  //setUp(steps: _*)
+  
+  setUp(scn.inject(atOnceUsers(10), nothingFor(5.seconds), atOnceUsers(15), nothingFor(5.seconds), atOnceUsers(20)))
+  
+}
+*/

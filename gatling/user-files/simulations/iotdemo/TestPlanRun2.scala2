@@ -1,0 +1,151 @@
+package iotdemo
+
+import io.gatling.core.Predef._
+import io.gatling.core.structure.PopulationBuilder
+import io.gatling.http.Predef._
+import scala.concurrent.duration._
+import scala.util.Random
+import java.time.LocalTime
+
+
+trait Scenario2 extends Simulation {
+
+  val httpConf = http
+    .baseURL("http://192.168.99.100") // Here is the root for all relative URLs
+    .acceptHeader("text/plain,text/html,application/xhtml+xml,application/json,application/xml;q=0.9,*/*;q=0.8") // Here are the common headers
+    .doNotTrackHeader("1")
+    .acceptLanguageHeader("en-US,en;q=0.5")
+    .acceptEncodingHeader("gzip, deflate")
+    .userAgentHeader("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:16.0) Gecko/20100101 Firefox/16.0")
+
+  val headers = Map("Content-Type" -> "application/json") // Note the headers specific to a given request
+
+  val r = scala.util.Random
+  var abc = r.nextInt(50)+20
+  var abcd = (abc.toDouble)/10000
+  var latitude = 53.43+abcd
+  var longitude = -2.159-abcd
+  var meter = "meter" + r.nextPrintableChar + r.nextPrintableChar + r.nextPrintableChar + r.nextPrintableChar + r.nextPrintableChar
+  var houseId = "abcde" + r.nextPrintableChar + r.nextPrintableChar + r.nextPrintableChar + r.nextPrintableChar + r.nextPrintableChar
+  val reading = "reading"
+  val n = "n"
+  
+  val periods = r.nextInt(2)
+
+  // CHANGES START HERE....
+  // Values below are taken from https://www.elexon.co.uk/wp-content/uploads/2013/11/load_profiles_v2.0_cgi.pdf, Figure 1
+
+  // User profiles
+  val domesticUser = List(330,280,260,240,230,220,220,210,210,210,
+             230,260,330,430,510,540,550,520,490,470,
+             460,450,440,470,500,480,450,430,420,430,
+             460,510,590,720,820,860,860,850,830,800,
+             760,740,720,680,640,550,470,400)
+
+  val nonDomesticUser = List(3000,4000,4900,4900,4800,4650,4400,4300,4150,4000,
+             3900,3800,3700,3700,3800,4100,4400,4700,5100,5350,
+             5500,5500,5450,5400,5350,5200,5050,4900,4900,4850,
+             4800,4750,4700,4500,4300,3800,3400,3100,2850,2700,
+             2600,2500,2500,2400,2300,2300,2250,2500)
+
+  val userTypes = Array(domesticUser, nonDomesticUser)
+
+
+  // Apply a given user profile
+  def applyUserProfile(usageProfile: List[Int]) = {
+    require(usageProfile.length == 48, "We should have usage readings for the day taken at 30 minute intervals")
+
+    foreach(usageProfile, reading, n) {
+      exec(
+        http("Add a reading")
+          .post(":9003/meters/${myresponseId}")
+          .headers(headers)
+          .body(StringBody("""{
+            "timestamp" : 10,
+            "power" : ${reading}
+          }""")).asJSON
+       )
+      //.pause(1000 milliseconds, 3000 milliseconds)
+      //.pause(1000 milliseconds)
+/*      .doIfEquals("${n}", 40) {
+	     rendezVous(800)
+	  }
+*/	  
+	   
+   }
+  }
+
+  // Create a new meter given a new set of user details
+  def addMeter(description: String, houseId: String, latitude: Double, longitude: Double) =
+    http("Add a meter")
+      .post(":9002/meters")
+      .headers(headers)
+      .body(StringBody(s"""{
+               "location": {
+                     "latitude" : $latitude,
+                     "longitude" : $longitude
+                    },
+               "metadata": {
+                     "description": "$description",
+                     "houseId": "$houseId"
+                    }
+      }""")).asJSON
+      .check(jsonPath("$.id").saveAs("myresponseId"))
+
+
+  def getAllMeters() = {
+	http("Get all meters")
+      .get(":9002/meters")
+      .headers(headers)
+      .check(jsonPath("$..id").count.saveAs("metersID"))
+      
+  }
+
+  // Extract the average consumption
+  def averageConsumption() =
+    http("Get average consumption")
+      .get(":9002/meters/${myresponseId}")
+      .headers(headers)
+      .check(jsonPath("$.averageConsumption").ofType[Double].saveAs("avgC"))
+
+
+  def scen(name: String) = {
+   scenario(name)
+          .exec(_.set(reading, 0))
+          .pause(1)
+          //.exec(addMeter(meter, houseId, latitude, longitude))
+          //.pause(10)
+          .exec(getAllMeters())
+          //.pause(22)
+          //.exec(applyUserProfile(domesticUser))
+          
+          	  .exec(session => {
+		val aaa = session.get("metersID").as[Int]
+		println("METERS ---->    " + aaa)
+		session
+	  })
+
+	}
+	  
+
+//END OF SIMULATION BRACE
+}
+
+
+class A_Phase_One_2000_rampUp_Users extends Scenario2 {
+
+  //val profile = Random.shuffle(userTypes.toList).head
+
+  setUp(scen("Add a meter, submit readings and get average consumption for a domestic user" 
+  ).inject(
+      atOnceUsers(1))
+      /*.throttle(
+      jumpToRps(10),
+      holdFor(603),
+      reachRps(500) in (200 seconds),
+      holdFor(1001 seconds)
+      )*/
+
+      .protocols(httpConf))
+  
+}

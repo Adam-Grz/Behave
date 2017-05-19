@@ -1,0 +1,69 @@
+package nevis
+
+import io.gatling.core.Predef._
+import io.gatling.core.structure.PopulationBuilder
+import io.gatling.http.Predef._
+import scala.concurrent.duration._
+
+
+trait Scenario2 extends Simulation {
+
+  val httpConf = http
+    .baseURL("http://192.168.99.100") // Here is the root for all relative URLs
+    .acceptHeader("text/plain,text/html,application/xhtml+xml,application/json,application/xml;q=0.9,*/*;q=0.8") // Here are the common headers
+    .doNotTrackHeader("1")
+    .acceptLanguageHeader("en-US,en;q=0.5")
+    .acceptEncodingHeader("gzip, deflate")
+    .userAgentHeader("Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:16.0) Gecko/20100101 Firefox/16.0")
+
+  val headers = Map("Content-Type" -> "application/json") // Note the headers specific to a given request
+
+
+  // Hit the healthcheck/positive endpoint
+  def healthPos() =
+    http("GET healthcheck positive")
+      .get(":9000/healthcheck/positive")
+      .headers(headers)
+      .check(status.is(200))
+
+  // Hit the healthcheck/negative endpoint
+  def healthNeg() =
+    http("GET healthcheck negative")
+      .get(":9000/healthcheck/negative")
+      .headers(headers)
+      .check(status.is(404))
+
+
+
+  // Scenario definition
+  def scen(name: String) = {
+   scenario(name)
+          .exec(healthPos())
+	}
+	  
+}
+
+
+class A_AtOnceUsers_1000 extends Scenario2 {
+  setUp(scen("Hit positive healthcheck" )
+    .inject(
+      atOnceUsers(1000))
+      .protocols(httpConf))
+}
+
+class B_Ramp_Users_10000_Over_10s extends Scenario2 {
+  setUp(scen("Hit positive healthcheck" )
+    .inject(
+      rampUsers(10000) over (10.second))
+      .protocols(httpConf))
+}
+
+class C_AtOnceUsers3000_RampUsersPerSec200_300_30s_ConstantPerSec250_20s extends Scenario2 {
+  setUp(scen("Hit positive healthcheck" )
+    .inject(
+      atOnceUsers(3000),
+      nothingFor(5.second),
+      rampUsersPerSec(200) to 300 during (30.second) randomized,
+      constantUsersPerSec(250) during (20.second))
+      .protocols(httpConf))
+}
