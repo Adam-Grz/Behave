@@ -29,7 +29,7 @@ msg.attach(part)
  
 server = smtplib.SMTP_SSL('poczta.o2.pl', 465)
 #server.starttls()
-server.login(fromaddr, "jaser")
+server.login(fromaddr, "XXXXX")
 text = msg.as_string()
 server.sendmail(fromaddr, toaddr, text)
 server.quit()
