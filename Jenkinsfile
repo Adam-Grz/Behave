@@ -6,7 +6,6 @@ pipeline {
             sh 'prep.sh'
           }
 }
-    stages{
         stage('test') {
          steps {
           script {
@@ -20,5 +19,5 @@ pipeline {
                        }
                  }
                }
-          }
+
 }
