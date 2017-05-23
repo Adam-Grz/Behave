@@ -3,7 +3,10 @@ from email.MIMEMultipart import MIMEMultipart
 from email.MIMEText import MIMEText
 from email.MIMEBase import MIMEBase
 from email import encoders
- 
+import sys
+
+epass = sys.argv[1]
+
 fromaddr = "smarq@o2.pl"
 toaddr = "adamg@cakesolutions.net"
  
@@ -29,7 +32,7 @@ msg.attach(part)
  
 server = smtplib.SMTP_SSL('poczta.o2.pl', 465)
 #server.starttls()
-server.login(fromaddr, "XXXXX")
+server.login(fromaddr, epass)
 text = msg.as_string()
 server.sendmail(fromaddr, toaddr, text)
 server.quit()
