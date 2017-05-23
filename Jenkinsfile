@@ -8,6 +8,7 @@ pipeline {
 }
     stages{
         stage('test') {
+          script {
             parallel (
                 "gatling" : {
                     sh 'test-gatling.sh'
@@ -16,5 +17,6 @@ pipeline {
                     sh 'test-python.sh' + params.TARGET_URL + params.LOGINS + params.PASSWORDS
             })
                        }
-           }
+                 }
+          }
 }
