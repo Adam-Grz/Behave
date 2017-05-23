@@ -5,7 +5,7 @@ pipeline {
         stage('Preparation') {
          steps{
           script{
-            sh 'prep.sh'
+            sh './prep.sh'
                 }
               }
           }
@@ -15,10 +15,10 @@ pipeline {
           script {
             parallel (
                 "gatling" : {
-                    sh 'test-gatling.sh'
+                    sh './test-gatling.sh'
             }, 
                 "python" : {
-                    sh 'test-python.sh' + params.TARGET_URL + params.LOGINS + params.PASSWORDS
+                    sh './test-python.sh' + params.TARGET_URL + params.LOGINS + params.PASSWORDS
             })
                        }
                  }
