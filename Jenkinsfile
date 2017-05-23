@@ -18,7 +18,7 @@ pipeline {
                     sh 'bash ./test-gatling.sh'
             }, 
                 "python" : {
-                    sh 'bash ./test-python.sh' + params.TARGET_URL + params.LOGINS + params.PASSWORDS
+                    sh 'bash ./test-python.sh'
             })
                        }
                  }
