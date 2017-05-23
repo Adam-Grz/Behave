@@ -14,8 +14,7 @@ pipeline {
             }, 
                 "python" : {
                     sh 'test-python.sh' + params.TARGET_URL + params.LOGINS + params.PASSWORDS
-            }),
-    failFast: false
-                      }
+            })
+                       }
            }
 }
