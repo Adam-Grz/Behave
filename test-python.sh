@@ -1,6 +1,7 @@
 #!/bin/bash
 
 docker run -i -t themcmurder/ubuntu-python-pip /bin/bash
+ls
 pip -q install selenium requests behave promise git
 git clone -q https://github.com/hugeinc/behave-parallel
 cd behave-parallel
