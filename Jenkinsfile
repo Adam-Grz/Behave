@@ -1,4 +1,7 @@
-stage('Preparation') {
+pipeline {
+    agent any
+    
+    stage('Preparation') {
     sh 'prep.sh'
 }
 
@@ -9,4 +12,5 @@ stage('test') {
       sh 'test-python.sh' + params.TARGET_URL + params.LOGINS + params.PASSWORDS
     },
     failFast: false
+}
 }
