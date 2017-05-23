@@ -8,6 +8,7 @@ pipeline {
 }
     stages{
         stage('test') {
+         steps {
           script {
             parallel (
                 "gatling" : {
@@ -18,5 +19,6 @@ pipeline {
             })
                        }
                  }
+               }
           }
 }
