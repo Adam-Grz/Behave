@@ -3,9 +3,13 @@ pipeline {
     
     stages{
         stage('Preparation') {
+         steps{
+          script{
             sh 'prep.sh'
+                }
+              }
           }
-}
+
         stage('test') {
          steps {
           script {
@@ -19,5 +23,5 @@ pipeline {
                        }
                  }
                }
-
+         }
 }
