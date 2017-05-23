@@ -23,5 +23,12 @@ pipeline {
                        }
                  }
                }
+        stage('cleanup') {
+         steps {
+          scripts {
+           deleteDir()
+                  }
+               }
+                         }
          }
 }
