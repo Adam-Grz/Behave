@@ -16,16 +16,18 @@ pipeline {
             parallel (
                 "gatling" : {
                     sh 'docker pull denvazh/gatling'
-                    sh 'docker run -m -d denvazh/gatling'
-                    sh 'docker exec cp RecordedSimulation.scala denvazh/gatling:/RecordedSimulation.scala'
+                    sh 'docker ps'
+                    sh 'docker run -d denvazh/gatling'
+                    sh 'docker cp RecordedSimulation.scala denvazh/gatling:/RecordedSimulation.scala'
                     sh 'ls'
             }, 
                 "python" : {
                     sh 'docker pull themcmurder/ubuntu-python-pip'
+                    sh 'docker ps'
                     sh 'docker run -d themcmurder/ubuntu-python-pip'
-                    sh 'docker exec cp bruteforce.py themcmurder/ubuntu-python-pip:/bruteforce.py'
-                    sh 'docker exec cp logins.txt themcmurder/ubuntu-python-pip:/logins.txt'
-                    sh 'docker exec cp passwords.txt themcmurder/ubuntu-python-pip:/passwords.txt'
+                    sh 'docker cp bruteforce.py themcmurder/ubuntu-python-pip:/bruteforce.py'
+                    sh 'docker cp logins.txt themcmurder/ubuntu-python-pip:/logins.txt'
+                    sh 'docker cp passwords.txt themcmurder/ubuntu-python-pip:/passwords.txt'
                     sh 'python bruteforce.py $TARGET_URL $LOGINS $PASSWORDS'
 
             })
