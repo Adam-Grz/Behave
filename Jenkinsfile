@@ -20,7 +20,8 @@ pipeline {
                     sh 'docker pull denvazh/gatling'
                     sh 'docker run --name gatlingAG -i -d denvazh/gatling'
                     sh 'docker cp RecordedSimulation.scala gatlingAG:/RecordedSimulation.scala'
-                    sh 'ls'
+                    sh 'docker run --name gatlingAG -i -d denvazh/gatling ls'
+                    sh 'docker run --name gatlingAG -i -d denvazh/gatling /bin/bash/ls'
             }, 
                 "python" : {
                     sh 'docker stop ubuntuAG'
