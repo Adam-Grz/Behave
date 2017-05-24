@@ -27,6 +27,7 @@ pipeline {
                         docker exec ubuntuAG apt-get -qq install -y python
                         docker exec ubuntuAG apt-get -qq install -y python-pip
                         docker exec ubuntuAG pip -q install selenium requests behave promise
+                        docker exec ubuntuAG ls
                         docker exec ubuntuAG cd behave-parallel
                         docker exec ubuntuAG python setup.py --quiet install
                         docker exec ubuntuAG cd ..
