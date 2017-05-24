@@ -25,6 +25,9 @@ pipeline {
                         docker cp sed.sh ubuntuAG:/
                         docker cp features ubuntuAG:/
                         docker cp geckodriver ubuntuAG:/
+                        docker cp geckodriver ubuntuAG:/features/
+                        docker cp geckodriver ubuntuAG:/behave-parallel/
+                        docker cp geckodriver ubuntuAG:/behave-parallel/bin/
                         docker cp bruteforce.py ubuntuAG:/
                         docker cp logins.txt ubuntuAG:/
                         docker cp passwords.txt ubuntuAG:/
