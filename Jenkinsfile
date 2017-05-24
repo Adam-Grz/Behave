@@ -18,8 +18,8 @@ pipeline {
                     sh 'docker ps'
             }, 
                 "python" : {
-                    sh 'docker stop ubuntuAG'
-                    sh 'docker rm ubuntuAG'
+                    sh 'docker stop $(docker ps -a -q)'
+                    sh 'docker rm $(docker ps -a -q)'
                     sh 'docker pull ubuntu'
                     sh 'docker run --name ubuntuAG ubuntu /bin/bash'
                     sh 'docker cp bruteforce.py ubuntuAG:/bruteforce.py'
