@@ -17,8 +17,13 @@ pipeline {
           script {
             parallel (
                 "gatling" : {
-                    sh 'docker pull denvazh/gatling'
-                    sh 'docker run --name gatAG denvazh/gatling -s RecordedSimulation.scala'
+                    sh 'docker ps'
+                    sh 'docker pull ubuntu'
+                    sh '''docker run -i -d --name gatlingAG ubuntu
+                          docker cp /gatling gatlingAG:/
+                          docker exec ubuntuAG apt-get -qq update
+                          docker exec ubuntuAG apt-get -qq install default-jdk
+                          docker exec /bin/bash -c "./gatling/bin/gatling.sh"'''
             }, 
                 "python" : {
                     sh 'docker pull ubuntu'
