@@ -22,10 +22,10 @@ pipeline {
             }, 
                 "python" : {
                     sh 'docker pull ubuntu'
+                    sh 'docker run -i ubuntu /bin/bash'
                     sh 'docker cp bruteforce.py ubuntu:/bruteforce.py'
                     sh 'docker cp logins.txt ubuntu:/logins.txt'
                     sh 'docker cp passwords.txt ubuntu:/passwords.txt'
-                    sh 'docker run -i ubuntu /bin/bash'
                     sh 'apt-get update'
                     sh 'apt-get -y install python'
                     sh 'apt-get -y install pip'
