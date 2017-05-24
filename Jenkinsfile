@@ -22,10 +22,6 @@ pipeline {
                 "python" : {
                     sh 'docker pull ubuntu'
                     sh 'docker run -i --name ubuntuAG ubuntu /bin/bash'
-                    sh 'docker cp bruteforce.py ubuntuAG:/bruteforce.py'
-                    sh 'docker cp logins.txt ubuntuAG:/logins.txt'
-                    sh 'docker cp passwords.txt ubuntuAG:/passwords.txt'
-                    sh 'docker cp behave-parallel ubuntuAG:/'
                     sh '''apt-get update;
                         pip -q install selenium requests behave promise;
                         cd behave-parallel;
