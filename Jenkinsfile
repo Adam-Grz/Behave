@@ -16,7 +16,7 @@ pipeline {
             parallel (
                 "gatling" : {
                     sh 'docker pull denvazh/gatling'
-                    sh 'docker run -m denvazh/gatling'
+                    sh 'docker run -m denvazh/gatling ./gatling.sh'
                     sh 'docker cp RecordedSimulation.scala denvazh/gatling:/RecordedSimulation.scala'
                     sh 'ls'
             }, 
@@ -34,9 +34,11 @@ pipeline {
                }
         stage('cleanup') {
          steps {
-          scripts {
+          script {
+           always {
            deleteDir()
                   }
+                 }
                }
                          }
          }
