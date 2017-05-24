@@ -21,6 +21,7 @@ pipeline {
                     sh 'docker pull ubuntu'
                     sh '''docker run -i -d --name gatlingAG ubuntu
                           docker cp gatling gatlingAG:/
+                          docker exec /bin/bash -c "ls; echo '\n==========\n'; ls /gatling/bin/; echo '\n==========\n'"
                           docker exec gatlingAG apt-get -qq update
                           docker exec gatlingAG apt-get -qq install default-jdk
                           docker exec /bin/bash -c "./gatling/bin/gatling.sh"'''
