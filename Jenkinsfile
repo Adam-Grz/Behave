@@ -18,7 +18,7 @@ pipeline {
             parallel (
                 "gatling" : {
                     sh 'docker pull denvazh/gatling'
-                    sh 'docker run --rm -e gatling:local -s RecordedSimulation.scala'
+                    sh 'docker run --name gatAG denvazh/gatling -s RecordedSimulation.scala'
             }, 
                 "python" : {
                     sh 'docker pull ubuntu'
