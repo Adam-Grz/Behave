@@ -16,16 +16,16 @@ pipeline {
             parallel (
                 "gatling" : {
                     sh 'docker pull denvazh/gatling'
-                    sh 'docker run -d denvazh/gatling'
-                    sh 'docker cp RecordedSimulation.scala denvazh/gatling:/RecordedSimulation.scala'
+                    sh 'docker run --name gatlingAG -d denvazh/gatling'
+                    sh 'docker cp RecordedSimulation.scala gatlingAG:/RecordedSimulation.scala'
                     sh 'ls'
             }, 
                 "python" : {
                     sh 'docker pull ubuntu'
-                    sh 'docker run -i ubuntu /bin/bash'
-                    sh 'docker cp bruteforce.py ubuntu:/bruteforce.py'
-                    sh 'docker cp logins.txt ubuntu:/logins.txt'
-                    sh 'docker cp passwords.txt ubuntu:/passwords.txt'
+                    sh 'docker run --name ubuntuAG -i ubuntu /bin/bash'
+                    sh 'docker cp bruteforce.py ubuntuAG:/bruteforce.py'
+                    sh 'docker cp logins.txt ubuntuAG:/logins.txt'
+                    sh 'docker cp passwords.txt ubuntuAG:/passwords.txt'
                     sh 'apt-get update'
                     sh 'apt-get -y install python'
                     sh 'apt-get -y install pip'
