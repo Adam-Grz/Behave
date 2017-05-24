@@ -34,8 +34,7 @@ pipeline {
                     sh 'cd behave-parallel'
                     sh 'python setup.py --quiet install'
                     sh 'cd ..'
-                    sh 'scennumber=$(sed 's/Scenario:/Scenario:\'$'\n/g' features/*.feature | grep -c "Scenario:")'
-                    sh 'python behave-parallel/bin/behave-parallel --processes $scennumber --junit --junit-directory TestResults' 
+                    sh 'python behave-parallel/bin/behave-parallel --processes 4 --junit --junit-directory TestResults' 
                     sh 'python bruteforce.py $TARGET_URL $LOGINS $PASSWORDS'
 
             })
