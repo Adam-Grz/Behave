@@ -17,7 +17,9 @@ pipeline {
           script {
             parallel (
                 "gatling" : {
-                    sh 'docker ps'
+                    sh 'docker pull denvazh/gatling'
+                    sh 'docker cp RecordedSimulation.scala denvazh/gatling:/'
+                    sh 'docker run --rm -v `pwd`/conf:/opt/gatling/conf -v `pwd`/user-files:/opt/gatling/user-files -v `pwd`/results:/opt/gatling/results -e gatling:local -s RecordedSimulation.scala'
             }, 
                 "python" : {
                     sh 'docker pull ubuntu'
@@ -36,6 +38,7 @@ pipeline {
                         docker exec ubuntuAG /bin/bash -c "apt-get install -y apt-utils; apt-get -qq install -y git; git clone -q https://github.com/hugeinc/behave-parallel"
                         docker exec ubuntuAG /bin/bash -c "apt-get install -y firefox"
                         docker exec ubuntuAG /bin/bash -c "export PATH=$PATH:/"
+                        docker exec ubuntuAG /bin/bash -c "export PATH=$PATH:/geckodriver"
                         docker exec ubuntuAG /bin/bash -c "cd /behave-parallel/; python setup.py --quiet install; cd .."
                         docker cp geckodriver ubuntuAG:/behave-parallel/
                         docker cp geckodriver ubuntuAG:/behave-parallel/bin/
