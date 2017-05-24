@@ -2,16 +2,6 @@ pipeline {
     agent any
     
     stages{
-        stage('cleanup') {
-         steps {
-          script {
-           always {
-           deleteDir()
-                  }
-                 }
-               }
-                         }
-
         stage('Preparation') {
          steps{
           script{
