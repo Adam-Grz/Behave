@@ -25,7 +25,8 @@ pipeline {
                         docker cp behave-parallel ubuntuAG:/
                         docker exec ubuntuAG apt-get update
                         docker exec ubuntuAG apt-get install -y python
-                        docker exec ubuntuAG pip -q install selenium requests behave promise
+                        docker exec ubuntuAG ls /usr/local/bin/
+                        docker exec ubuntuAG /usr/local/bin/pip -q install selenium requests behave promise
                         docker exec ubuntuAG cd behave-parallel
                         docker exec ubuntuAG python setup.py --quiet install
                         docker exec ubuntuAG cd ..
