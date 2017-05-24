@@ -15,12 +15,7 @@ pipeline {
           script {
             parallel (
                 "gatling" : {
-                    sh 'docker stop gatlingAG'
-                    sh 'docker rm gatlingAG'
-                    sh 'docker pull denvazh/gatling'
-                    sh 'docker run --name gatlingAG denvazh/gatling'
-                    sh 'docker cp gatling gatlingAG:/'
-                    sh 'docker run --name gatlingAG denvazh/gatling ./gatling/bin/gatling.sh'
+                    sh 'docker ps'
             }, 
                 "python" : {
                     sh 'docker stop ubuntuAG'
@@ -31,8 +26,6 @@ pipeline {
                     sh 'docker cp logins.txt ubuntuAG:/logins.txt'
                     sh 'docker cp passwords.txt ubuntuAG:/passwords.txt'
                     sh 'docker run ubuntu apt-get update'
-                    sh 'docker run ubuntu apt-get -y install python'
-                    sh 'docker run ubuntu apt-get -y install pip'
                     sh 'docker run ubuntu pip -q install selenium requests behave promise git'
                     sh 'docker run ubuntu git clone -q https://github.com/hugeinc/behave-parallel'
                     sh 'docker run ubuntu cd behave-parallel'
