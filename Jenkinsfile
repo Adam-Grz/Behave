@@ -21,7 +21,12 @@ pipeline {
                     sh 'ls'
             }, 
                 "python" : {
-                    sh 'bash ./test-python.sh'
+                    sh 'docker pull themcmurder/ubuntu-python-pip'
+                    sh 'docker cp bruteforce.py themcmurder/ubuntu-python-pip:/bruteforce.py'
+                    sh 'docker cp logins.txt themcmurder/ubuntu-python-pip:/logins.txt'
+                    sh 'docker cp passwords.txt themcmurder/ubuntu-python-pip:/passwords.txt'
+                    sh 'python bruteforce.py $TARGET_URL $LOGINS $PASSWORDS'
+
             })
                        }
                  }
