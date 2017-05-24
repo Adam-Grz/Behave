@@ -21,7 +21,7 @@ pipeline {
             }, 
                 "python" : {
                     sh 'docker pull ubuntu'
-                    sh '''docker run -i -d --name ubuntuAG ubuntu
+                    sh '''docker run -i -d --name ubuntuAG ubuntu /bin/bash
                         docker cp behave-parallel ubuntuAG:/
                         docker exec ubuntuAG apt-get -qq update
                         docker exec ubuntuAG apt-get -qq install -y python
