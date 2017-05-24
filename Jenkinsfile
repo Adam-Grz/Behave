@@ -17,17 +17,25 @@ pipeline {
                 "gatling" : {
                     sh 'docker pull denvazh/gatling'
                     sh 'docker run -d denvazh/gatling'
-                    sh 'docker ps'
                     sh 'docker cp RecordedSimulation.scala denvazh/gatling:/RecordedSimulation.scala'
                     sh 'ls'
             }, 
                 "python" : {
-                    sh 'docker pull themcmurder/ubuntu-python-pip'
-                    sh 'docker run -d themcmurder/ubuntu-python-pip'
-                    sh 'docker ps'
-                    sh 'docker cp bruteforce.py themcmurder/ubuntu-python-pip:/bruteforce.py'
-                    sh 'docker cp logins.txt themcmurder/ubuntu-python-pip:/logins.txt'
-                    sh 'docker cp passwords.txt themcmurder/ubuntu-python-pip:/passwords.txt'
+                    sh 'docker pull ubuntu'
+                    sh 'docker cp bruteforce.py ubuntu:/bruteforce.py'
+                    sh 'docker cp logins.txt ubuntu:/logins.txt'
+                    sh 'docker cp passwords.txt ubuntu:/passwords.txt'
+                    sh 'docker run -i ubuntu /bin/bash'
+                    sh 'apt-get update'
+                    sh 'apt-get -y install python'
+                    sh 'apt-get -y install pip'
+                    sh 'pip -q install selenium requests behave promise git'
+                    sh 'git clone -q https://github.com/hugeinc/behave-parallel'
+                    sh 'cd behave-parallel'
+                    sh 'python setup.py --quiet install'
+                    sh 'cd ..'
+                    sh 'scennumber=$(sed 's/Scenario:/Scenario:\'$'\n/g' features/*.feature | grep -c "Scenario:")'
+                    sh 'python behave-parallel/bin/behave-parallel --processes $scennumber --junit --junit-directory TestResults' 
                     sh 'python bruteforce.py $TARGET_URL $LOGINS $PASSWORDS'
 
             })
