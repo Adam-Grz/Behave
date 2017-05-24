@@ -18,7 +18,6 @@ pipeline {
             parallel (
                 "gatling" : {
                     sh 'docker pull denvazh/gatling'
-                    sh 'docker cp RecordedSimulation.scala denvazh/gatling:/'
                     sh 'docker run --rm -v `pwd`/conf:/opt/gatling/conf -v `pwd`/user-files:/opt/gatling/user-files -v `pwd`/results:/opt/gatling/results -e gatling:local -s RecordedSimulation.scala'
             }, 
                 "python" : {
