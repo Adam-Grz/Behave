@@ -33,6 +33,8 @@ pipeline {
                         docker exec ubuntuAG apt-get -qq install -y python-pip
                         docker exec ubuntuAG pip install selenium requests behave promise
                         docker exec ubuntuAG /bin/bash -c "apt-get install -y apt-utils; apt-get -qq install -y git; git clone -q https://github.com/hugeinc/behave-parallel"
+                        docker exec ubuntuAG /bin/bash -c "apt-get install -y firefox"
+                        docker exec ubuntuAG /bin/bash -c "export PATH=$PATH:/"
                         docker exec ubuntuAG /bin/bash -c "cd /behave-parallel/; python setup.py --quiet install; cd .."
                         docker exec ubuntuAG /bin/bash -c "chmod 777 sed.sh; ./sed.sh"
                         docker exec ubuntuAG python bruteforce.py $TARGET_URL $LOGINS $PASSWORDS'''
