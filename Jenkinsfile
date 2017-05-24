@@ -25,8 +25,9 @@ pipeline {
                     sh 'docker cp bruteforce.py ubuntuAG:/bruteforce.py'
                     sh 'docker cp logins.txt ubuntuAG:/logins.txt'
                     sh 'docker cp passwords.txt ubuntuAG:/passwords.txt'
-                    sh 'docker run ubuntu apt-get update'
-                    sh 'docker run ubuntu pip -q install selenium requests behave promise git'
+                    sh 'docker run ubuntu \
+                    apt-get update\
+                    pip -q install selenium requests behave promise git'
                     sh 'docker run ubuntu git clone -q https://github.com/hugeinc/behave-parallel'
                     sh 'docker run ubuntu cd behave-parallel'
                     sh 'docker run ubuntu python setup.py --quiet install'
