@@ -29,6 +29,7 @@ pipeline {
                         docker exec ubuntuAG pip -q install selenium requests behave promise
                         docker exec ubuntuAG ls
                         docker exec ubuntuAG bash -c "cd behave-parallel"
+                        docker exec ubuntuAG ls
                         docker exec ubuntuAG python setup.py --quiet install
                         docker exec ubuntuAG bash -c "cd .."
                         docker exec ubuntuAG scennumber=$(sed \'s/Scenario:/Scenario:\'$\'\n/g\' features/*.feature | grep -c "Scenario:")
