@@ -15,12 +15,14 @@ pipeline {
           script {
             parallel (
                 "gatling" : {
+                    sh 'docker stop gatlingAG'
                     sh 'docker pull denvazh/gatling'
                     sh 'docker run --name gatlingAG -i -d denvazh/gatling'
                     sh 'docker cp RecordedSimulation.scala gatlingAG:/RecordedSimulation.scala'
                     sh 'ls'
             }, 
                 "python" : {
+                    sh 'docker stop ubuntuAG'
                     sh 'docker pull ubuntu'
                     sh 'docker run --name ubuntuAG -i ubuntu /bin/bash'
                     sh 'docker cp bruteforce.py ubuntuAG:/bruteforce.py'
