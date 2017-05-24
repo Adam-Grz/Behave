@@ -23,10 +23,10 @@ pipeline {
                     sh 'docker pull ubuntu'
                     sh '''docker run -i -d --name ubuntuAG ubuntu
                         docker cp behave-parallel ubuntuAG:/
-                        docker exec ubuntuAG apt-get update
-                        docker exec ubuntuAG apt-get install -y python
-                        docker exec ubuntuAG ls /usr/local/bin/
-                        docker exec ubuntuAG /usr/local/bin/pip -q install selenium requests behave promise
+                        docker exec ubuntuAG apt-get -qq update
+                        docker exec ubuntuAG apt-get -qq install -y python
+                        docker exec ubuntuAG apt-get -qq install -y python-pip
+                        docker exec ubuntuAG pip -q install selenium requests behave promise
                         docker exec ubuntuAG cd behave-parallel
                         docker exec ubuntuAG python setup.py --quiet install
                         docker exec ubuntuAG cd ..
