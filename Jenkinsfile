@@ -21,8 +21,8 @@ pipeline {
             }, 
                 "python" : {
                     sh 'docker pull ubuntu'
-                    sh 'docker run -i --name ubuntuAG ubuntu'
-                    sh '''ls;
+                    sh '''docker run -i --name ubuntuAG ubuntu
+                        ls;
                         apt-get update;
                         pip -q install selenium requests behave promise;
                         cd behave-parallel;
