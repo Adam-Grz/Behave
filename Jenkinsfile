@@ -16,7 +16,7 @@ pipeline {
             parallel (
                 "gatling" : {
                     sh 'docker pull denvazh/gatling'
-                    sh 'docker run --name gatlingAG -d denvazh/gatling'
+                    sh 'docker run --name gatlingAG -i -d denvazh/gatling'
                     sh 'docker cp RecordedSimulation.scala gatlingAG:/RecordedSimulation.scala'
                     sh 'ls'
             }, 
