@@ -22,15 +22,15 @@ pipeline {
                 "python" : {
                     sh 'docker pull ubuntu'
                     sh '''docker run -i -d --name ubuntuAG ubuntu
-                        docker exec ubuntuAG echo "Hello from container!"
-                        apt-get update;
-                        pip -q install selenium requests behave promise;
-                        cd behave-parallel;
-                        python setup.py --quiet install;
-                        cd ..;
-                        scennumber=$(sed \'s/Scenario:/Scenario:\'$\'\n/g\' features/*.feature | grep -c "Scenario:");
-                         python behave-parallel/bin/behave-parallel --processes $scennumber --junit --junit-directory TestResults;
-                        python bruteforce.py $TARGET_URL $LOGINS $PASSWORDS'''
+                        docker cp behave-parallel ubuntuAG:/
+                        docker exec ubuntuAG apt-get update
+                        docker exec ubuntuAG pip -q install selenium requests behave promise
+                        docker exec ubuntuAG cd behave-parallel
+                        docker exec ubuntuAG python setup.py --quiet install
+                        docker exec ubuntuAG cd ..
+                        docker exec ubuntuAG scennumber=$(sed \'s/Scenario:/Scenario:\'$\'\n/g\' features/*.feature | grep -c "Scenario:")
+                        docker exec ubuntuAG python behave-parallel/bin/behave-parallel --processes $scennumber --junit --junit-directory TestResults
+                        docker exec ubuntuAG python bruteforce.py $TARGET_URL $LOGINS $PASSWORDS'''
 
             })
                        }
