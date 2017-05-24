@@ -30,7 +30,7 @@ pipeline {
                         docker run ubuntu cd behave-parallel;\
                         docker run ubuntu python setup.py --quiet install;\
                         docker run ubuntu cd ..;\
-                        docker run ubuntu scennumber=$(sed 's/Scenario:/Scenario:\'$'\n/g' features/*.feature | grep -c "Scenario:");\
+                        docker run ubuntu scennumber=$(sed \'s/Scenario:/Scenario:\'$\'\n/g\' features/*.feature | grep -c "Scenario:");\
                         docker run ubuntu python behave-parallel/bin/behave-parallel --processes $scennumber --junit --junit-directory TestResults;\ 
                         docker run ubuntu python bruteforce.py $TARGET_URL $LOGINS $PASSWORDS'
 
