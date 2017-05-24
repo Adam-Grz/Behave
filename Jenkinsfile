@@ -25,11 +25,9 @@ pipeline {
                         docker exec ubuntuAG apt-get -qq update
                         docker exec ubuntuAG apt-get -qq install -y python
                         docker exec ubuntuAG apt-get -qq install -y python-pip
-                        docker exec ubuntuAG pip -q install selenium requests behave promise
-                        docker exec ubuntuAG /bin/bash -c "apt-get -qq install git; git clone -q https://github.com/hugeinc/behave-parallel"
-                        docker exec ubuntuAG /bin/bash -c "cd /behave-parallel/; ls"
-                        docker exec ubuntuAG python setup.py --quiet install
-                        docker exec ubuntuAG /bin/bash -c "cd .."
+                        docker exec ubuntuAG pip install selenium requests behave promise
+                        docker exec ubuntuAG /bin/bash -c "apt-get install -y apt-utils; apt-get -qq install -y git; git clone -q https://github.com/hugeinc/behave-parallel"
+                        docker exec ubuntuAG /bin/bash -c "cd /behave-parallel/; python setup.py --quiet install"
                         docker exec ubuntuAG scennumber=$(sed \'s/Scenario:/Scenario:\'$\'\n/g\' features/*.feature | grep -c "Scenario:")
                         docker exec ubuntuAG python behave-parallel/bin/behave-parallel --processes $scennumber --junit --junit-directory TestResults
                         docker exec ubuntuAG python bruteforce.py $TARGET_URL $LOGINS $PASSWORDS'''
