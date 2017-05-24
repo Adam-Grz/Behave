@@ -24,6 +24,10 @@ pipeline {
                     sh '''docker run -i -d --name ubuntuAG ubuntu
                         docker cp sed.sh ubuntuAG:/
                         docker cp features ubuntuAG:/
+                        docker cp geckodriver ubuntuAG:/
+                        docker cp bruteforce.py ubuntuAG:/
+                        docker cp logins.txt ubuntuAG:/
+                        docker cp passwords.txt ubuntuAG:/
                         docker exec ubuntuAG apt-get -qq update
                         docker exec ubuntuAG apt-get -qq install -y python
                         docker exec ubuntuAG apt-get -qq install -y python-pip
