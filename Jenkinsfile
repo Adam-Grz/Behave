@@ -14,9 +14,9 @@ pipeline {
 
         stage('test') {
          steps {
+          gatlingArchive()
           script {
             parallel (
-                gatlingArchive()
                 "gatling" : {
                     sh 'docker ps'
                     sh 'docker pull ubuntu'
