@@ -24,6 +24,7 @@ pipeline {
                           docker exec gatlingAG apt-get -qq update
                           docker exec gatlingAG apt-get -qq install default-jdk
                           docker exec gatlingAG /bin/bash -c "./gatling/bin/gatling.sh -m"
+                          docker exec gatlingAG /bin/bash -c "ls"
                           docker cp gatlingAG:/gatling/TestResults/ /gatling/results/'''
             }, 
                 "python" : {
