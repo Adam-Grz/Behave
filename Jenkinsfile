@@ -43,7 +43,8 @@ pipeline {
                         docker exec ubuntuAG /bin/bash -c "cd /behave-parallel/; python setup.py --quiet install; cd .."
                         docker cp geckodriver ubuntuAG:/usr/local/bin/
                         docker exec ubuntuAG /bin/bash -c "chmod 777 sed.sh; ./sed.sh"
-                        docker exec ubuntuAG python bruteforce.py $TARGET_URL $LOGINS $PASSWORDS'''
+                        docker exec ubuntuAG python bruteforce.py $TARGET_URL $LOGINS $PASSWORDS
+                        docker cp ubuntuAG:/gatling/PythonResults .'''
                      junit '**/PythonResults/*.xml'
             })
                        }
