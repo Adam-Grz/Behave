@@ -1,6 +1,8 @@
 pipeline {
     agent any
     
+    gatlingArchive()
+    
     stages{
         stage('Preparation') {
          steps{
