@@ -1,0 +1,18 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<testsuite errors="0" failures="0" name="test_2suite.testing response" skipped="0" tests="1" time="0.0997">
+
+<testcase classname="test_2suite.testing response" name="navigating to the correct url" status="passed" time="0.0997"><system-out>
+<![CDATA[
+@scenario.begin
+  Scenario: navigating to the correct url
+    Given we navigate to the Cake Solutions test website4 ... passed in 0.0001s
+    When we check the headers ... passed in 0.0995s
+    Then the headers should be GitHub.com ... passed in 0.0001s
+
+@scenario.end
+--------------------------------------------------------------------------------
+
+Captured stdout:
+
+]]>
+</system-out></testcase></testsuite>

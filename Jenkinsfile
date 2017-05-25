@@ -32,7 +32,6 @@ pipeline {
                         docker cp features ubuntuAG:/
                         docker cp geckodriver ubuntuAG:/
                         docker cp geckodriver ubuntuAG:/features/
-                        docker cp geckodriver ubuntuAG:/features/steps/
                         docker cp bruteforce.py ubuntuAG:/
                         docker cp logins.txt ubuntuAG:/
                         docker cp passwords.txt ubuntuAG:/
@@ -41,10 +40,7 @@ pipeline {
                         docker exec ubuntuAG apt-get -qq install -y python-pip
                         docker exec ubuntuAG pip install selenium requests behave promise
                         docker exec ubuntuAG /bin/bash -c "apt-get install -y apt-utils; apt-get -qq install -y git; git clone -q https://github.com/hugeinc/behave-parallel"
-                        docker exec ubuntuAG /bin/bash -c "apt-get install -y firefox"
-                        docker exec ubuntuAG /bin/bash -c "PATH='/'"
-                        docker exec ubuntuAG /bin/bash -c "PATH='/features/'"
-                        docker exec ubuntuAG /bin/bash -c "echo $PATH"
+                        docker exec ubuntuAG /bin/bash -c "apt-get install -y google-chrome-stable"
                         docker exec ubuntuAG /bin/bash -c "cd /behave-parallel/; python setup.py --quiet install; cd .."
                         docker cp geckodriver ubuntuAG:/behave-parallel/
                         docker cp geckodriver ubuntuAG:/behave-parallel/bin/
