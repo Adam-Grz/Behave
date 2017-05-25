@@ -40,9 +40,6 @@ pipeline {
                         docker exec ubuntuAG /bin/bash -c "apt-get install -y apt-utils; apt-get -qq install -y git; git clone -q https://github.com/hugeinc/behave-parallel"
                         docker exec ubuntuAG /bin/bash -c "apt-get install -y firefox"
                         docker exec ubuntuAG /bin/bash -c "cd /behave-parallel/; python setup.py --quiet install; cd .."
-                        docker exec ubuntuAG /bin/bash -c "mkdir usr"
-                        docker exec ubuntuAG /bin/bash -c "mkdir usr/local"
-                        docker exec ubuntuAG /bin/bash -c "mkdir usr"/local/bin"
                         docker cp geckodriver ubuntuAG:/usr/local/bin/
                         docker exec ubuntuAG /bin/bash -c "chmod 777 sed.sh; ./sed.sh"
                         docker exec ubuntuAG python bruteforce.py $TARGET_URL $LOGINS $PASSWORDS'''
