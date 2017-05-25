@@ -4,7 +4,7 @@ from promise import Promise
 
 def before_scenario(context, scenario):
 	if 'browser' in scenario.tags:
-		context.driver = webdriver.Chrome('chromedriver')
+		context.driver = webdriver.Firefox('geckodriver')
 #		context.driver.set_window_size(1500, 1000)
 #		context.driver.maximize_window()
 		context.driver.get('https://cakesolutions.github.io/cake-qa-test/#/')

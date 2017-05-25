@@ -40,7 +40,7 @@ pipeline {
                         docker exec ubuntuAG apt-get -qq install -y python-pip
                         docker exec ubuntuAG pip install selenium requests behave promise
                         docker exec ubuntuAG /bin/bash -c "apt-get install -y apt-utils; apt-get -qq install -y git; git clone -q https://github.com/hugeinc/behave-parallel"
-                        docker exec ubuntuAG /bin/bash -c "apt-get install -y google-chrome-stable"
+                        docker exec ubuntuAG /bin/bash -c "apt-get install -y firefox"
                         docker exec ubuntuAG /bin/bash -c "cd /behave-parallel/; python setup.py --quiet install; cd .."
                         docker cp geckodriver ubuntuAG:/behave-parallel/
                         docker cp geckodriver ubuntuAG:/behave-parallel/bin/
