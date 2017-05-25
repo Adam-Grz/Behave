@@ -19,7 +19,7 @@ pipeline {
                 "gatling" : {
                     sh 'docker ps'
                     sh 'docker pull ubuntu'
-                    sh '''docker run -i -d --name gatlingAG ubuntu
+                    sh '''docker run -i -d --net=host --name gatlingAG ubuntu
                           docker cp gatling gatlingAG:/
                           docker exec gatlingAG apt-get -qq update
                           docker exec gatlingAG apt-get -qq install default-jdk
@@ -27,7 +27,7 @@ pipeline {
             }, 
                 "python" : {
                     sh 'docker pull ubuntu'
-                    sh '''docker run -i -d --net=host --name ubuntuAG ubuntu
+                    sh '''docker run -i -d --net=host --net=host --name ubuntuAG ubuntu
                         docker cp sed.sh ubuntuAG:/
                         docker cp features ubuntuAG:/
                         docker cp geckodriver ubuntuAG:/
