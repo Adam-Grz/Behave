@@ -49,15 +49,7 @@ pipeline {
                        }
                  }
                }
-        stage('cleanup2') {
-         steps {
-          script {
-           always {
-           deleteDir()
-                  }
-                 }
-               }
-                         }
+
          }
         post {
           always {
