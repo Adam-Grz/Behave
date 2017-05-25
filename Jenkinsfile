@@ -1,8 +1,6 @@
 pipeline {
     agent any
     
-    gatlingArchive()
-    
     stages{
         stage('Preparation') {
          steps{
@@ -18,6 +16,7 @@ pipeline {
          steps {
           script {
             parallel (
+                gatlingArchive()
                 "gatling" : {
                     sh 'docker ps'
                     sh 'docker pull ubuntu'
