@@ -24,7 +24,7 @@ pipeline {
                           docker exec gatlingAG apt-get -qq update
                           docker exec gatlingAG apt-get -qq install default-jdk
                           docker exec gatlingAG /bin/bash -c "./gatling/bin/gatling.sh -m"
-                          publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, 
+                          publishHTML(target: [allowMissing: false, alwaysLinkToLastBuild: false, 
                           keepAll: false, reportDir: 'gatling-reports', reportFiles: 'index.html', 
                           reportName: 'HTML Report', reportTitles: ''])'''
             }, 
