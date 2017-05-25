@@ -24,8 +24,8 @@ pipeline {
                           docker exec gatlingAG apt-get -qq update
                           docker exec gatlingAG apt-get -qq install default-jdk
                           docker exec gatlingAG /bin/bash -c "./gatling/bin/gatling.sh -m"
-                          docker exec gatlingAG /bin/bash -c "ls"
-                          docker cp gatlingAG:/gatling/TestResults/ /gatling/results/'''
+                          docker exec gatlingAG /bin/bash -c "mkdir 001"
+                          docker cp gatlingAG:/gatling/TestResults/ /001/'''
             }, 
                 "python" : {
                     sh 'docker pull ubuntu'
@@ -59,4 +59,9 @@ pipeline {
                }
                          }
          }
+        post {
+          always {
+            junit '**/Results/*.xml'
+        }
+             }
 }
