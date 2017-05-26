@@ -28,7 +28,7 @@ pipeline {
             }, 
                 "python" : {
                     sh 'docker pull ubuntu'
-                    sh '''docker run -i -d --net=host --net=host --name ubuntuAG ubuntu
+                    sh '''docker run -i -d --net=host --name ubuntuAG ubuntu
                         docker cp sed.sh ubuntuAG:/
                         docker cp features ubuntuAG:/
                         docker cp bruteforce.py ubuntuAG:/
