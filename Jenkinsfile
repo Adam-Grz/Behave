@@ -6,7 +6,7 @@ pipeline {
          steps{
           script{
             sh 'docker run -d -p 8080:8080 webgoat/webgoat-7.1'
-            sh 'docker pull ubuntu'
+            sh 'docker pull adamgrz/gatling-ubuntu'
                 }
               }
           }
@@ -16,11 +16,7 @@ pipeline {
           script {
             parallel (
                 "gatling" : {
-                    sh 'docker ps'
-                    sh '''docker run -i -d --net=host --name gatlingAG ubuntu
-                          docker cp gatling gatlingAG:/
-                          docker exec gatlingAG apt-get -qq update
-                          docker exec gatlingAG apt-get -qq install default-jdk
+                    sh '''docker run -i -d --net=host --name gatlingAG adamgrz/gatling-ubuntu
                           docker exec gatlingAG /bin/bash -c "./gatling/bin/gatling.sh -m"
                           docker cp gatlingAG:/gatling/TestResults .'''
             }, 
