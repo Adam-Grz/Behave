@@ -8,6 +8,7 @@ pipeline {
             sh 'docker stop $(docker ps -a -q)'
             sh 'docker rm $(docker ps -a -q)'
             sh 'docker run -d -p 8080:8080 webgoat/webgoat-7.1'
+            sh 'docker pull ubuntu'
                 }
               }
           }
@@ -18,7 +19,6 @@ pipeline {
             parallel (
                 "gatling" : {
                     sh 'docker ps'
-                    sh 'docker pull ubuntu'
                     sh '''docker run -i -d --net=host --name gatlingAG ubuntu
                           docker cp gatling gatlingAG:/
                           docker exec gatlingAG apt-get -qq update
@@ -27,7 +27,6 @@ pipeline {
                           docker cp gatlingAG:/gatling/TestResults .'''
             }, 
                 "python" : {
-                    sh 'docker pull ubuntu'
                     sh '''docker run -i -d --net=host --name ubuntuAG ubuntu
                         docker cp sed.sh ubuntuAG:/
                         docker cp features ubuntuAG:/
@@ -44,7 +43,8 @@ pipeline {
                         docker cp geckodriver ubuntuAG:/usr/local/bin/
                         docker exec ubuntuAG /bin/bash -c "chmod 777 sed.sh; ./sed.sh"
                         docker exec ubuntuAG python bruteforce.py $TARGET_URL $LOGINS $PASSWORDS
-                        docker cp ubuntuAG:/PythonResults .'''
+                        docker cp ubuntuAG:/PythonResults .
+                        docker cp ubuntuAG:/bruteforceresult.txt .'''
                      junit '**/PythonResults/*.xml'
             })
                        }
