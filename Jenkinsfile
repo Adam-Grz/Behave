@@ -5,8 +5,6 @@ pipeline {
         stage('Preparation') {
          steps{
           script{
-            sh 'docker stop $(docker ps -a -q)'
-            sh 'docker rm $(docker ps -a -q)'
             sh 'docker run -d -p 8080:8080 webgoat/webgoat-7.1'
             sh 'docker pull ubuntu'
                 }
