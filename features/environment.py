@@ -13,5 +13,5 @@ def before_scenario(context, scenario):
 
 def after_scenario(context, scenario):
 	if 'browser' in scenario.tags:
-		context.xvfb.stop()
+		#context.xvfb.stop()
 		context.driver.quit()
