@@ -22,6 +22,8 @@ pipeline {
             }, 
                 "python" : {
                     sh '''docker run -i -d --net=host --name ubuntuAG adamgrz/my-ubuntu
+                        docker exec ubuntuAG /bin/bash -c "which firefox"
+                        docker exec ubuntuAG /bin/bash -c "which Xvfb"
                         docker exec ubuntuAG /bin/bash -c "./sed.sh"
                         docker exec ubuntuAG python bruteforce.py $TARGET_URL $LOGINS $PASSWORDS
                         docker cp ubuntuAG:/PythonResults .
