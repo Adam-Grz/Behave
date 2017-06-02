@@ -36,7 +36,7 @@ pipeline {
                     sh 'docker exec jsAG /bin/bash -c "export DISPLAY=:99"'
                     sh 'docker exec jsAG /bin/bash -c "java -jar selenium-server-standalone-3.4.0.jar > /dev/null 2>&1 &"'
                     sh 'docker exec jsAG ps aux'
-                    sh 'docker exec jsAG /bin/bash -c "cd JavaScript; protractor run.js > JStests.log"'
+                    sh 'docker exec jsAG /bin/bash -c "cd JavaScript; protractor run.js"'
                     sh 'docker cp jsAG:/JavaScript/JStests.log .'
             }
                       )
