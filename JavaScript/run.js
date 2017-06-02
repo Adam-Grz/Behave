@@ -34,7 +34,7 @@ exports.config = {
     onPrepare: function () {
   jasmine.getEnv().addReporter(reporter);
   },
-  seleniumAddress: 'http://localhost:4444/wd/hub',
+//  seleniumAddress: 'http://localhost:4444/wd/hub',
   specs: ['./test/specs/test_*.js'],
   jasmineNodeOpts: {
     showColors: true,

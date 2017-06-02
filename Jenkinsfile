@@ -7,6 +7,9 @@ pipeline {
           script{
             sh 'docker run -d -p 8080:8080 webgoat/webgoat-7.1'
             sh 'docker pull adamgrz/my-ubuntu'
+            sh 'docker run -td selAG adamgrz/my-ubuntu'
+            sh 'docker exec -d jsAG /bin/bash -c "webdriver-manager start"'
+
                 }
               }
           }
@@ -29,23 +32,15 @@ pipeline {
                         docker cp ubuntuAG:/bruteforceresult.txt .*/'''
                      junit '**/PythonResults/*.xml'
             },
-                "selenium" : {
-                    sh 'docker run -i -d --net=host --name selAG adamgrz/my-ubuntu'
-                    sh 'docker exec -d jsAG /bin/bash -c "Xvfb -ac :99 -screen 0 1280x1024x16 &"'
-                    sh 'docker exec jsAG /bin/bash -c "export DISPLAY=:99"'
-                    sh 'docker exec jsAG /bin/bash -c "webdriver-manager start"'
-            }
-                      )
-                 }
-                 },
-        steps {
-          script {
                 "javascript" : {
                     sh 'docker run -i -d --net=host --name jsAG adamgrz/my-ubuntu'
+                    sh 'docker exec -d selAG /bin/bash -c "Xvfb -ac :99 -screen 0 1280x1024x16 &"'
+                    sh 'docker exec jsAG /bin/bash -c "export DISPLAY=:99"'
                     sh 'docker exec jsAG /bin/bash -c "cd JavaScript; protractor run.js"'
                     sh 'docker cp jsAG:/JavaScript/JStests.log .'
             }
-              }
+                      )
+                       }
                  }
                }
          }
