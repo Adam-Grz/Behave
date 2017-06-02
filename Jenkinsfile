@@ -34,10 +34,10 @@ pipeline {
             },
                 "javascript" : {
                     sh 'docker run -i -d --net=host --name jsAG adamgrz/my-ubuntu'
-                    sh 'docker exec jsAG /bin/bash -c "Xvfb -ac :99 -screen 0 1280x1024x16 &"'
+                    sh 'docker exec -d jsAG /bin/bash -c "Xvfb -ac :99 -screen 0 1280x1024x16 &"'
                     sh 'docker exec jsAG /bin/bash -c "export DISPLAY=:99"'
                     sh 'docker cp selenium-server-standalone-3.4.0.jar jsAG:/'
-                    sh 'docker exec jsAG /bin/bash -c "java -jar selenium-server-standalone-2.39.0.jar -host 127.0.0.1 -port 4444 > /dev/null"'
+                    sh 'docker exec -d jsAG /bin/bash -c "java -jar selenium-server-standalone-2.39.0.jar -host 127.0.0.1 -port 4444 > /dev/null"'
                     sh 'docker exec selenium /bin/bash -c "cd JavaScript; sudo protractor run.js"'
                     sh 'docker cp selenium:/JavaScript/JStests.log .'
             }
