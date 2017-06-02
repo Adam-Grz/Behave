@@ -9,6 +9,7 @@ pipeline {
             sh 'docker pull adamgrz/my-ubuntu'
             sh 'docker build -t aa -f Dockerfile .'
             sh 'docker run -d --name selenium aa'
+            sh 'docker exec selenium ps aux'
                 }
               }
           }
