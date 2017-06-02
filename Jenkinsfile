@@ -28,7 +28,7 @@ pipeline {
                         docker cp ubuntuAG:/PythonResults .
                         docker cp ubuntuAG:/bruteforceresult.txt .'''
                      junit '**/PythonResults/*.xml'
-            }
+            },
                 "javascript" : {
                     sh '''docker run -i -d --net=host --name jsAG adamgrz/my-ubuntu
                         docker exec jsAG /bin/bash -c "Xvfb -ac :99 -screen 0 1280x1024x16 &"
