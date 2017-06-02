@@ -26,8 +26,8 @@ pipeline {
                         docker exec ubuntuAG /bin/bash -c "./sed.sh"
                         docker exec ubuntuAG python bruteforce.py $TARGET_URL $LOGINS $PASSWORDS
                         docker cp ubuntuAG:/PythonResults .
-                        docker cp ubuntuAG:/bruteforceresult.txt .'''
-                     junit '**/PythonResults/*.xml'*/
+                        docker cp ubuntuAG:/bruteforceresult.txt .*/'''
+                     junit '**/PythonResults/*.xml'
             },
                 "javascript" : {
                     sh 'docker run -it -d --net=host --name jsAG adamgrz/my-ubuntu'
