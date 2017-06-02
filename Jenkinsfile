@@ -30,7 +30,7 @@ pipeline {
                      junit '**/PythonResults/*.xml'
             },
                 "javascript" : {
-                    sh 'docker run -it -d --net=host --name jsAG adamgrz/my-ubuntu
+                    sh 'docker run -it -d --net=host --name jsAG adamgrz/my-ubuntu'
                     sh 'Xvfb -ac :99 -screen 0 1280x1024x16 &'
                     sh 'export DISPLAY=:99'
                     sh 'webdriver-manager start /dev/null 2>&1'
