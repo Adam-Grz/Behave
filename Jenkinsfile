@@ -7,7 +7,8 @@ pipeline {
           script{
             sh 'docker run -d -p 8080:8080 webgoat/webgoat-7.1'
             sh 'docker pull adamgrz/my-ubuntu'
-
+            sh 'docker build -t aa -f Dockerfile .'
+            sh 'docker run -d --name selenium aa'
                 }
               }
           }
@@ -31,13 +32,8 @@ pipeline {
                      junit '**/PythonResults/*.xml'
             },
                 "javascript" : {
-                    sh 'docker run --net=host --name jsAG adamgrz/my-ubuntu'
-                    sh 'docker start -i jsAG'
-                    sh 'docker cp JavaScript/run.js jsAG:/JavaScript/'
-                    sh 'docker exec -d jsAG /bin/bash -c "Xvfb -ac :99 -screen 0 1280x1024x16 &"'
-                    sh 'docker exec jsAG /bin/bash -c "export DISPLAY=:99"'
-                    sh 'docker exec jsAG /bin/bash -c "cd JavaScript; protractor run.js"'
-                    sh 'docker cp jsAG:/JavaScript/JStests.log .'
+                    sh 'docker exec selenium /bin/bash -c "cd JavaScript; protractor run.js"'
+                    sh 'docker cp selenium:/JavaScript/JStests.log .'
             }
                       )
                        }
