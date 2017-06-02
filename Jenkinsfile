@@ -33,7 +33,8 @@ pipeline {
                      junit '**/PythonResults/*.xml'
             },
                 "javascript" : {
-                    sh 'docker exec selenium /bin/bash -c "cd JavaScript; protractor run.js"'
+                    sh 'docker exec selenium /bin/bash -c "cd JavaScript"'
+                    sh 'docker exec selenium protractor run.js'
                     sh 'docker cp selenium:/JavaScript/JStests.log .'
             }
                       )
