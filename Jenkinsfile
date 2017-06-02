@@ -36,13 +36,15 @@ pipeline {
                     sh 'docker exec jsAG /bin/bash -c "export DISPLAY=:99"'
                     sh 'docker exec jsAG /bin/bash -c "webdriver-manager start"'
             }
-                      ),
+                      )
+                 },
+          script {
                 "javascript" : {
                     sh 'docker run -i -d --net=host --name jsAG adamgrz/my-ubuntu'
                     sh 'docker exec jsAG /bin/bash -c "cd JavaScript; protractor run.js"'
                     sh 'docker cp jsAG:/JavaScript/JStests.log .'
             }
-                       }
+                 }
                  }
                }
          }
