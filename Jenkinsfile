@@ -35,7 +35,8 @@ pipeline {
                     sh 'docker exec jsAG /bin/bash -c "export DISPLAY=:99"'
                     sh 'webdriver-manager start /dev/null 2>&1'
                     sh '''docker exec jsAG /bin/bash -c "cd JavaScript; protractor run.js > JStests.log"
-                        docker cp jsAG:/JavaScript/JStests.log .'''
+                          docker cp jsAG:/JavaScript/JStests.log .
+                          docker exec jsAG /bin/bash -c "webdriver-manager shutdown"'''
             }
                       )
                        }
