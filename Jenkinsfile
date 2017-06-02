@@ -30,10 +30,10 @@ pipeline {
                      junit '**/PythonResults/*.xml'
             },
                 "javascript" : {
-                    sh '''docker run -i -d --net=host --name jsAG adamgrz/my-ubuntu
-                        docker exec -d jsAG /bin/bash -c "Xvfb -ac :99 -screen 0 1280x1024x16 &"
-                        docker exec jsAG /bin/bash -c "export DISPLAY=:99"
-                        docker exec -d jsAG /bin/bash -c "webdriver-manager start /dev/null 2>&1 &"
+                    sh '''docker run -it -d --net=host --name jsAG adamgrz/my-ubuntu
+                        "Xvfb -ac :99 -screen 0 1280x1024x16 &"
+                        "export DISPLAY=:99"
+                        "webdriver-manager start /dev/null 2>&1"
                         docker exec jsAG /bin/bash -c "cd JavaScript; protractor run.js > JStests.log"
                         docker cp jsAG:/JavaScript/JStests.log .'''
             }
