@@ -7,8 +7,6 @@ pipeline {
           script{
             sh 'docker run -d -p 8080:8080 webgoat/webgoat-7.1'
             sh 'docker pull adamgrz/my-ubuntu'
-            sh 'docker run -td selAG adamgrz/my-ubuntu'
-            sh 'docker exec -d jsAG /bin/bash -c "webdriver-manager start"'
 
                 }
               }
