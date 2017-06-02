@@ -34,7 +34,7 @@ pipeline {
                     sh 'docker cp selenium-server-standalone-3.4.0.jar jsAG:/'
                     sh 'docker exec -d jsAG /bin/bash -c "Xvfb -ac :99 -screen 0 1280x1024x16 &"'
                     sh 'docker exec jsAG /bin/bash -c "export DISPLAY=:99"'
-                    sh 'docker exec jsAG /bin/bash -c "webdriver-manager start > /dev/null 2>&1 &"'
+                    sh 'docker exec -d jsAG /bin/bash -c "webdriver-manager start > /dev/null 2>&1 &"'
                     sh 'docker exec jsAG ps aux'
                     sh 'docker exec jsAG /bin/bash -c "cd JavaScript; protractor run.js"'
                     sh 'docker cp jsAG:/JavaScript/JStests.log .'
