@@ -29,17 +29,19 @@ pipeline {
                         docker cp ubuntuAG:/bruteforceresult.txt .*/'''
                      junit '**/PythonResults/*.xml'
             },
-                "javascript" : {
-                    sh 'docker run -i -d --net=host --name jsAG adamgrz/my-ubuntu'
+                "selenium" : {
+                    sh 'docker run -i -d --net=host --name selAG adamgrz/my-ubuntu'
                     sh 'docker cp selenium-server-standalone-3.4.0.jar jsAG:/'
                     sh 'docker exec -d jsAG /bin/bash -c "Xvfb -ac :99 -screen 0 1280x1024x16 &"'
                     sh 'docker exec jsAG /bin/bash -c "export DISPLAY=:99"'
-                    sh 'docker exec -d jsAG /bin/bash -c "webdriver-manager start"'
-                    sh 'docker exec jsAG ps aux'
+                    sh 'docker exec jsAG /bin/bash -c "webdriver-manager start"'
+            }
+                      ),
+                "javascript" : {
+                    sh 'docker run -i -d --net=host --name jsAG adamgrz/my-ubuntu'
                     sh 'docker exec jsAG /bin/bash -c "cd JavaScript; protractor run.js"'
                     sh 'docker cp jsAG:/JavaScript/JStests.log .'
             }
-                      )
                        }
                  }
                }
