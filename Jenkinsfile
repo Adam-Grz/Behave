@@ -31,7 +31,7 @@ pipeline {
                      junit '**/PythonResults/*.xml'
             },
                 "javascript" : {
-                    sh 'docker run -it --net=host --name jsAG adamgrz/my-ubuntu'
+                    sh 'docker run --net=host --name jsAG adamgrz/my-ubuntu'
                     sh 'docker cp JavaScript/run.js jsAG:/JavaScript/'
                     sh 'docker exec -d jsAG /bin/bash -c "Xvfb -ac :99 -screen 0 1280x1024x16 &"'
                     sh 'docker exec jsAG /bin/bash -c "export DISPLAY=:99"'
