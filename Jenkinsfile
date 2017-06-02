@@ -8,7 +8,7 @@ pipeline {
             sh 'docker run -d -p 8080:8080 webgoat/webgoat-7.1'
             sh 'docker pull adamgrz/my-ubuntu'
             sh 'docker build -t aa -f Dockerfile .'
-            sh 'docker run -d --name selenium aa'
+            sh 'docker run --net=host -d --name selenium aa'
             sh 'docker exec selenium ps aux'
                 }
               }
