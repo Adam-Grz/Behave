@@ -1,3 +1,4 @@
+#noinspection CucumberUndefinedStep
 Feature: testing correct page title and page url
 
 	@browser
